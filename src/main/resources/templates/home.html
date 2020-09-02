@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="fragments/fragments.html :: headerfiles">
+    <title>Home</title>
+</head>
+<body>
+    <div th:insert="fragments/fragments.html :: nav"></div>
+    <div class="jumbotron-container">
+        <div class="jumbotron">
+            <div class="inside-jumbotron">
+                <div class="home-text-frame">
+                    <div>
+                        <h2>Bibliothèque d'OCland</h2>
+                    </div>
+                    <div>
+                        <p>
+                            Bienvenue sur le site officiel de la  bibliothèque d'OCland.
+                            Vous trouverez dans notre catalogue tous les livres qu'il est possible
+                            d'emprunter dans notre bibliothèque et la possibilité de gérer vos
+                            emprunts depuis votre espace personnel.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:insert="fragments/fragments.html :: footer" class="footer"></div>
+    <div th:insert="fragments/fragments.html :: script"></div>
+
+</body>
+</html>
