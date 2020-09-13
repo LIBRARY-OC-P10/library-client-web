@@ -1,0 +1,94 @@
+@import "https://use.fontawesome.com/releases/v5.5.0/css/all.css";
+
+.login-clean {
+  padding: 80px 0;
+}
+
+.login-clean form {
+  max-width: 320px;
+  width: 90%;
+  margin: 50px auto;
+  background-color: rgba(255,255,255,0.8);
+  padding: 40px;
+  border-radius: 4px;
+  color: #505e6c;
+  box-shadow: 1px 1px 4px rgba(119, 119, 119,0.5);
+}
+
+.account-clean form{
+  max-width: 500px;
+  width: 90%;
+  margin: 50px auto;
+  background-color: rgba(255,255,255,0.8);
+  padding: 40px;
+  border-radius: 4px;
+  color: #505e6c;
+  box-shadow: 1px 1px 4px rgba(119, 119, 119,0.5);
+}
+
+.login-clean .illustration, .account-clean .illustration {
+  text-align: center;
+  padding: 0 0 20px;
+  font-size: 100px;
+  color: rgb(128, 128, 128);
+}
+
+.login-clean form .form-control, .account-clean form .form-control{
+  background: #f7f9fc;
+  border: none;
+  border-bottom: 1px solid #dfe7f1;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+  color: inherit;
+  text-indent: 8px;
+  height: 42px;
+}
+
+.login-clean form .form-control:focus,
+.account-clean form .form-control:focus{
+  border-bottom: 1px solid #777777;
+}
+
+.login-clean form .btn-primary,
+.account-clean form .btn-primary{
+  background: #808080;
+  border: none;
+  border-radius: 4px;
+  padding: 11px;
+  box-shadow: none;
+  margin-top: 26px;
+  text-shadow: none;
+  outline: none !important;
+}
+
+.login-clean form .btn-primary:hover, .login-clean form .btn-primary:active,
+.account-clean form .btn-primary:hover, .account-clean form .btn-primary:active{
+  background: #a3a3a3;
+}
+
+.login-clean form .btn-primary:active ,
+.account-clean form .btn-primary:active {
+  transform: translateY(1px);
+}
+
+.login-clean form .forgot,
+.account-clean form .forgot {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  color: #6f7a85;
+  opacity: 0.7;
+  text-decoration: none;
+}
+
+.login-clean form .forgot:hover, .login-clean form .forgot:active,
+.account-clean form .forgot:hover, .account-clean form .forgot:active {
+  opacity: 1;
+  text-decoration: none;
+}
+
+.account-clean form .readonly{
+  background: none !important;
+}
+

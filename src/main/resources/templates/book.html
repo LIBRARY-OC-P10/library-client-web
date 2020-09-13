@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:insert="fragments/fragments.html :: headerfiles">
+    <title>Bibliothèque d'OCland</title>
+</head>
+<body>
+
+<div th:insert="fragments/fragments.html :: nav"></div>
+
+<div id="book-detail">
+    <div class="swiper-slide">
+        <div class="row inside-slider">
+            <div class="col-md-5">
+                <div class="cover-book">
+                    <img th:src="${book.cover.url}" alt="couverture du livre" src="">
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="info-book">
+                    <div class="header-description">
+                        <div th:text="${book.title}" class="title-book"></div>
+                    </div>
+                    <div class="text-description">
+                        <div><b>Auteur :</b>
+                            <span th:text="${book.author.firstName}"></span>
+                            <span th:text="${book.author.lastName}"></span>
+                        </div>
+                        <div><b>Genre :</b> <span th:text="${book.categories}"></span></div>
+                        <div class="overflow-auto">
+                            <b>Résumé :</b> <span th:text="${book.summary}" ></span>
+                        </div>
+                        <div><b>Disponibilités :</b>
+                            <span th:text="${book.copies.size()}"></span> / <span th:text="${book.stock}"></span>
+<!--                            <span th:if="${book.copies.size() != 0}">
+                                <a th:href="@{|/reservations/book/${book.id}/reserve|}">
+                                    <button type="submit" class="btn-sm btn-group-sm action-button">Réserver</button>
+                                </a>
+                            </span>-->
+                        </div>
+                    </div>
+                    <div class="book-detail-button text-center">
+                        <a th:href="@{|javascript:history.go(-1)|}">
+                            <button type="submit" class="btn btn-light action-button">Retour</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer insert -->
+<div th:insert="fragments/fragments.html :: footer" class="footer"></div>
+<!-- Scripts insert -->
+<div th:insert="fragments/fragments.html :: script"></div>
+
+</body>
+
+</html>
