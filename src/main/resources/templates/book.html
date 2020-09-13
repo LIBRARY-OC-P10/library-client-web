@@ -1,9 +1,81 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head th:insert="fragments/fragments.html :: headerfiles">
-    <title>Bibliothèque d'OCland</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css}" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../static/css/styles.css" th:href="@{/css/styles.css}">
+    <title>BOOK</title>
 </head>
 <body>
+<div class="main-grid">
+    <!-- Navigation bar-->
+    <nav class="nav" th:if="${session.logged}">
+        <ul>
+            <li><a th:href="@{/home}">Accueil</a></li>
+            <li><a th:href="@{/books/catalog}">Catalogue</a></li>
+            <li><a th:href="@{/customers/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/logout}">Déconnexion</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- Book Section -->
+    <section class="book-container">
+        <img th:src="${book.cover.getUrl()}" alt="book-cover" src="">
+        <div class="book__top">
+            <h1><span th:text="${book.title}"></span></h1>
+            <p>
+                <span th:text="${book.summary}" ></span>
+            </p>
+            <ul>
+                <li>
+                    Auteur : &nbsp; <span>hamilton</span>
+                </li>
+                <li>
+                    genre : &nbsp; <span th:text="${book.categories}"></span>
+                </li>
+                <li>
+                    Disponibilités : &nbsp; <span th:text="${book.copies.size()}"></span> / <span th:text="${book.stock}"></span>
+                </li>
+                <li>
+                    Réservations : &nbsp; <span>6</span>
+                </li>
+            </ul>
+            <div class="reserv-btn">
+                <!-- il faut faire une règle pour la possibilité de réserver s'il reste des livres et que la file
+                n'est pas pleine-->
+                <a href="#">
+                    <i class="fas fa-book"  aria-hidden="true"></i> &nbsp;
+                    RESERVER
+                </a>
+            </div>
+            <div class="return-btn">
+                <a th:href="@{|javascript:history.go(-1)|}">
+                    Retour
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <!-- Start: Links -->
+        <ul>
+            <li><a href="#">Accessibilité</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">A propos</a></li>
+            <li><a href="#">Nous contacter</a></li>
+        </ul>
+        <!-- End: Links -->
+        <!-- Start: Copyright -->
+        <p class="copyright">Bibliothèque d'OCland © 2020</p>
+        <!-- End: Copyright -->
+    </footer>
+</div>
+
+<!--
 
 <div th:insert="fragments/fragments.html :: nav"></div>
 
@@ -31,11 +103,11 @@
                         </div>
                         <div><b>Disponibilités :</b>
                             <span th:text="${book.copies.size()}"></span> / <span th:text="${book.stock}"></span>
-<!--                            <span th:if="${book.copies.size() != 0}">
+&lt;!&ndash;                            <span th:if="${book.copies.size() != 0}">
                                 <a th:href="@{|/reservations/book/${book.id}/reserve|}">
                                     <button type="submit" class="btn-sm btn-group-sm action-button">Réserver</button>
                                 </a>
-                            </span>-->
+                            </span>&ndash;&gt;
                         </div>
                     </div>
                     <div class="book-detail-button text-center">
@@ -49,10 +121,11 @@
     </div>
 </div>
 
-<!-- Footer insert -->
+&lt;!&ndash; Footer insert &ndash;&gt;
 <div th:insert="fragments/fragments.html :: footer" class="footer"></div>
-<!-- Scripts insert -->
+&lt;!&ndash; Scripts insert &ndash;&gt;
 <div th:insert="fragments/fragments.html :: script"></div>
+-->
 
 </body>
 

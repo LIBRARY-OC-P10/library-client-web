@@ -1,75 +1,79 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head th:insert="fragments/fragments.html :: headerfiles">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css}" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../static/css/styles.css" th:href="@{/css/styles.css}">
     <title>Bibliothèque d'OCland'</title>
 </head>
 <body>
 
-<div th:insert="fragments/fragments.html :: nav"></div>
+<!-- MAIN GRID START -->
+<div class="main-grid">
 
-<div class="container-fluid">
-    <!-- Search form -->
-    <div class="search-frame">
-        <form method="post" th:action="@{/books/catalog/search}" th:object="${searchAttribut}">
-            <div class="row align-items-center text-center">
-                <div class="col-md-4">
-                    <label class="mr-sm-2 sr-only" for="search"></label>
-                    <input type="text" th:field="*{searchValue}" class="form-control" id="search"
-                           placeholder="Je recherche...">
-                </div>
-                <div class="col-md-2">
-                    <label class="mr-sm-2 sr-only" for="criteria"></label>
-                    <select class="form-control" th:field="*{criteria}" id="criteria">
-                        <option th:value="title">Recherche par titre</option>
-                        <option th:value="author">Recherche par auteur</option>
-                    </select>
-                </div>
-                <div class="col-md-auto">
-                    <button type="submit" class="btn btn-light action-button">Rechercher</button>
-                </div>
+    <!-- Navigation bar-->
+    <nav class="nav" th:if="${session.logged}">
+        <ul>
+            <li><a th:href="@{/home}">Accueil</a></li>
+            <li><a th:href="@{/books/catalog}">Catalogue</a></li>
+            <li><a th:href="@{/customers/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/logout}">Déconnexion</a></li>
+        </ul>
+    </nav>
+
+    <!-- search box -->
+    <section class="search-container">
+        <div class="search-title">
+            <h2>Rechercher dans le catalogue</h2>
+        </div>
+        <form class="search-box" method="post" th:action="@{/books/catalog/search}" th:object="${searchAttribut}">
+            <div class="search-box__criteria">
+
+                <select name="" th:field="*{criteria}" id="criteria">
+                    <option th:value="title">Titre</option>
+                    <option th:value="author">Auteur</option>
+                </select>
+            </div>
+            <div class="search-box__form">
+                <input type="text" th:field="*{searchValue}">
+                <button><i class="fas fa-search"></i></button>
             </div>
         </form>
-    </div>
+    </section>
 
-    <!-- Books cards -->
-    <div class="catalog">
-        <div th:if="${!books.isEmpty()}">
-            <div th:each="book :${books}" class="catalog-item">
-                <a th:href="@{'/books/catalog/book/' + ${book.id}}" class="link-item">
-                    <div class="inside-item">
-                        <div class="cover-item">
-                            <img th:src="${book.cover.url}" alt="couverture du livre" src="">
-                        </div>
-                        <div class="info-item">
-                            <div class="header-item">
-                                <div th:text="${book.title}" class="title-book"></div>
-                                <div class="author-book">
-                                    ( <span th:text="${book.author.firstName}"></span> <span
-                                        th:text="${book.author.lastName}"></span> )
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- grid catalog -->
+    <section class="catalog" th:if="${!books.isEmpty()}">
+        <div class="catalog-item" th:each="book :${books}">
+            <a th:href="@{'/books/catalog/book/' + ${book.id}}">
+                <img th:src="${book.cover.url}" src="" alt="book-cover">
+                <h2 class="book-title"><span th:text="${book.title}"></span></h2>
+            </a>
+        </div>
+    </section>
+    <div class="return-btn">
+        <a th:href="@{/books/catalog}">
+            Retour
+        </a>
+    </div>
+    <section class="catalog" th:unless="${!books.isEmpty()}">
+        <div class="catalog-item">
+            <div th:text="${NoResult}" class="book-title">"Pas de Résultats"</div>
+            <div class="return-btn">
+                <a th:href="@{/books/catalog}">
+                    Retour
                 </a>
             </div>
         </div>
-        <div th:unless="${!books.isEmpty()}" class="catalog-item">
-            <div class="align-content-center">
-                <div th:text="${NoResult}" class="title-book">"Pas de Résultats"</div>
-            </div>
-            <div class="text-center">
-                <a class="nav-link" th:href="@{/books/catalog}">
-                    <button type="submit" class="btn btn-light action-button">Retour</button>
-                </a>
-            </div>
-        </div>
+    </section>
+    <div class="return-btn">
+        <a th:href="@{/books/catalog}">
+            Retour
+        </a>
     </div>
 </div>
 
-<!-- Footer insert -->
-<div th:insert="fragments/fragments.html :: footer" class="footer"></div>
-<!-- Scripts insert -->
-<div th:insert="fragments/fragments.html :: script"></div>
 
 </body>
 
