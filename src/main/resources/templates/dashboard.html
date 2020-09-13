@@ -47,8 +47,11 @@
                                 <div class="header-item">
                                     <div class="title-book" th:text="${loan.copy.book.title}"></div>
                                     <div class="loan-button-status">
+                                        <!-- Correction bug ticket #2 : si le prêt a un attribut Rendu
+                                         ou En retard le bouton de prolongation n'est pas disponible -->
                                         <div th:if="${!(loan.loanStatus.equalsIgnoreCase('Rendu') || loan.loanStatus.equalsIgnoreCase('En retard'))}"
                                              class="extend-button">
+                                            <!-- Correction bug ticket #2 : si le prêt est déjà prolongé le bouton n'est plus disponible -->
                                                 <span th:if="${loan.extend}" class="extend-button-disable">
                                                 <i class="fas fa-history"></i>
                                                 </span>
