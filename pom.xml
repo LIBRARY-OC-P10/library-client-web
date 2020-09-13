@@ -21,9 +21,9 @@
 	</properties>
 	
 	<scm>
-		<connection>scm:git:https://github.com/LIBRARY-OC-P7/library-client-web.git</connection>
-		<developerConnection>scm:git:https://github.com/LIBRARY-OC-P7/library-client-web.git</developerConnection>
-		<url>https://github.com/LIBRARY-OC-P7/library-client-web</url>
+		<connection>scm:git:https://github.com/LIBRARY-OC-P10/library-client-web.git</connection>
+		<developerConnection>scm:git:https://github.com/LIBRARY-OC-P10/library-client-web.git</developerConnection>
+		<url>https://github.com/LIBRARY-OC-P10/library-client-web</url>
 		<tag>@{project.version}</tag>
 	</scm>
 
