@@ -4,6 +4,8 @@ package org.mickael.libraryclientweb.controller;
 import org.mickael.libraryclientweb.bean.book.BookBean;
 import org.mickael.libraryclientweb.bean.book.CopyBean;
 import org.mickael.libraryclientweb.bean.book.SearchBean;
+import org.mickael.libraryclientweb.bean.customer.CustomerBean;
+import org.mickael.libraryclientweb.bean.reservation.ReservationBean;
 import org.mickael.libraryclientweb.proxy.FeignProxy;
 import org.mickael.libraryclientweb.security.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,25 @@ public class BookController {
         }
         book.setCopies(copies);
         model.addAttribute("book", book);
+        List<ReservationBean> reservationBeans = feignProxy.getAllReservationsByBookId(id, accessToken);
+        model.addAttribute("reservations", reservationBeans);
+        return BOOK;
+    }
+
+    @PostMapping("/catalog/book/{id}/reserve")
+    public String reserveBook(@PathVariable Integer id,@ModelAttribute BookBean book, Model model, @CookieValue(value = CookieUtils.HEADER, required = false)String accessToken){
+        accessToken = "Bearer " + accessToken;
+        Integer customerId = CookieUtils.getUserIdFromJWT(accessToken);
+        CustomerBean customerBean = feignProxy.retrieveCustomer(customerId, accessToken);
+        ReservationBean reservationBean = new ReservationBean();
+        reservationBean.setBookId(id);
+        reservationBean.setBookTitle(book.getTitle());
+        reservationBean.setCustomerId(customerId);
+        reservationBean.setCustomerEmail(customerBean.getEmail());
+        reservationBean.setCustomerLastname(customerBean.getLastName());
+        reservationBean.setCustomerFirstname(customerBean.getFirstName());
+        feignProxy.createReservation(reservationBean, accessToken);
+        model.addAttribute("msg", "Réservation validée");
         return BOOK;
     }
 

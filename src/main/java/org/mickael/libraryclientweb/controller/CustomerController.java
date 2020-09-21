@@ -42,7 +42,8 @@ public class CustomerController {
     public String accounts(@CookieValue(value = CookieUtils.HEADER, required = false)String accessToken, Model model){
         if (accessToken == null) return REDIRECT_LOGIN_VIEW;
         Integer customerId = CookieUtils.getUserIdFromJWT(accessToken);
-        CustomerBean customerBean = feignProxy.retrieveAccount(customerId, "Bearer " + accessToken);
+        System.out.println("access token front : " + accessToken);
+        CustomerBean customerBean = feignProxy.retrieveCustomer(customerId, "Bearer " + accessToken);
         List<LoanBean> loanBeans = feignProxy.findAllByCustomerId(customerId, "Bearer " + accessToken);
         for (LoanBean loanBean : loanBeans){
             loanBean.setCustomer(customerBean);
@@ -58,7 +59,7 @@ public class CustomerController {
         if (accessToken == null) return REDIRECT_LOGIN_VIEW;
         Integer userId = CookieUtils.getUserIdFromJWT(accessToken);
         Integer customerId = 2;
-        CustomerBean customerBean = feignProxy.retrieveAccount(customerId, "Bearer " + accessToken);
+        CustomerBean customerBean = feignProxy.retrieveCustomer(customerId, "Bearer " + accessToken);
         model.addAttribute(ACCOUNT_ATT, customerBean);
         return ACCOUNT_FORM_VIEW;
     }

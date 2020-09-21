@@ -50,18 +50,20 @@
     <!-- Reservation section -->
     <section class="reservation-container">
 
-        <div class="reservation-box">
+        <div class="reservation-box" th:each="reservation : ${reservations}">
             <i class="fa fa-book fa-4x" aria-hidden="true"></i>
             <h3>Reservation</h3>
-            <p>Anges déchus</p>
+            <p><span th:text="${reservation.bookTitle}"></span></p>
             <p>
-                <i class="fa fa-calendar-alt fa-1x" aria-hidden="true"></i> &nbsp; Disponibilité : <span>13.10.2020</span>
+                <i class="fa fa-calendar-alt fa-1x" aria-hidden="true"></i> &nbsp;
+                Disponibilité : <span th:text="${#temporals.format(reservation.soonDisponibilityDate,'dd MMM YYYY')}"></span>
             </p>
             <p>
-                <i class="fa fa-map-marker-alt" aria-hidden="true"></i> &nbsp; Position : <span>6</span>
+                <i class="fa fa-map-marker-alt" aria-hidden="true"></i> &nbsp;
+                Position : <span th:text="${reservation.position}"></span>
             </p>
             <div class="cancel-btn">
-                <a href="#" >Annuler</a>
+                <a th:href="@{|/reservation/cancel/${reservation.id}|}" >Annuler</a>
             </div>
 
         </div>

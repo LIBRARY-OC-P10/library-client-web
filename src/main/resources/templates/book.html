@@ -31,16 +31,16 @@
             </p>
             <ul>
                 <li>
-                    Auteur : &nbsp; <span>hamilton</span>
+                    Auteur : &nbsp; <span th:text="${book.author.getFirstName()}"></span><span th:text="${book.author.getLastName()}"></span>
                 </li>
                 <li>
-                    genre : &nbsp; <span th:text="${book.categories}"></span>
+                    Genre : &nbsp; <span th:text="${book.categories}"></span>
                 </li>
                 <li>
                     Disponibilités : &nbsp; <span th:text="${book.copies.size()}"></span> / <span th:text="${book.stock}"></span>
                 </li>
                 <li>
-                    Réservations : &nbsp; <span>6</span>
+                    Réservations : &nbsp; <span th:text="${reservations.size()}"></span>
                 </li>
             </ul>
             <div class="reserv-btn">

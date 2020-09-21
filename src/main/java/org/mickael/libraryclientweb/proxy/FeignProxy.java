@@ -34,7 +34,7 @@ public interface FeignProxy {
     /* ==== CUSTOMERS ==== */
     @GetMapping("/library-ms-customer/api/customers/{id}")
     @ResponseStatus(HttpStatus.OK)
-    CustomerBean retrieveAccount(@PathVariable("id") Integer id, @RequestHeader("Authorization") String accessToken);
+    CustomerBean retrieveCustomer(@PathVariable("id") Integer id, @RequestHeader("Authorization") String accessToken);
 
     @PutMapping("/library-ms-customer/api/customers/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -79,11 +79,19 @@ public interface FeignProxy {
     @PostMapping("/library-ms-reservation/api/reservations")
     ReservationBean createReservation(ReservationBean reservation, @RequestHeader("Authorization") String accessToken);
 
+    @GetMapping("/library-ms-reservation/api/reservations")
+    List<ReservationBean> getAllReservations(@RequestHeader("Authorization") String accessToken);
+
+    @GetMapping("/library-ms-reservation/api/reservations/book/{bookId}")
+    List<ReservationBean> getAllReservationsByBookId(@PathVariable("bookId") Integer bookId, @RequestHeader("Authorization") String accessToken);
+
     @GetMapping("/library-ms-reservation/api/reservations/customer/{customerId}")
     List<ReservationBean> getCustomerReservations(@PathVariable("customerId") Integer customerId, @RequestHeader("Authorization") String accessToken);
 
     @DeleteMapping("/library-ms-reservation/api/reservations/customer/{customerId}/book/{bookId}/")
     void deleteReservationAfterLoan(@PathVariable("customerId") Integer customerId, @PathVariable("bookId") Integer bookId, @RequestHeader("Authorization") String accessToken);
 
+    @DeleteMapping("/library-ms-reservation/api/reservations/{id}/")
+    void deleteReservationAfterTwoDays(@PathVariable("id") Integer id, @RequestHeader("Authorization") String accessToken);
 
 }
