@@ -477,7 +477,7 @@ footer a:hover {
     text-align: center;
 }
 
-.reserv-btn a {
+.reserv-btn button {
     padding: 0.5rem 0.8rem;
     display: inline-flex;
     background: var(--dark);
@@ -486,6 +486,14 @@ footer a:hover {
     border: 0;
     font-size: 1.2rem;
     transition: 0.2s;
+}
+
+.reserv-btn .error {
+    color: red;
+    font-size: 1.6rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 0.8rem;
 }
 
 .return-btn {

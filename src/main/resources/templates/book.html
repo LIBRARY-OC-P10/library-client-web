@@ -43,16 +43,23 @@
                     Réservations : &nbsp; <span th:text="${reservations.size()}"></span>
                 </li>
             </ul>
-            <div class="reserv-btn">
-                <!-- il faut faire une règle pour la possibilité de réserver s'il reste des livres et que la file
-                n'est pas pleine-->
-                <a href="#">
-                    <i class="fas fa-book"  aria-hidden="true"></i> &nbsp;
-                    RESERVER
-                </a>
+            <div class="reserv-btn" th:with="variable = ${book.stock * 2}" th:if="${!(reservations.size() == variable)}">
+                <form method="post" th:action="@{|/books/catalog/book/${book.id}/reserve|}" th:object="${book}" class="reserv-btn">
+                    <input type="hidden" th:field="*{title}" th:value="${book.title}">
+                    <input type="hidden" th:field="*{id}" th:value="${book.id}">
+                    <button type="submit">
+                        <i class="fas fa-book"  aria-hidden="true"></i> &nbsp;
+                        RESERVER
+                    </button>
+                </form>
+                <p th:if="${error}" class="error" th:text="${error}"></p>
             </div>
+            <div class="reserv-btn" th:with="variable = ${book.stock * 2}" th:unless="${!(reservations.size() == variable)}">
+                <h3>Prochaine disponibilité : &nbsp; <span th:text="${#temporals.format(soonDisponibilityDate,'dd MMM YYYY')}"></span></h3>
+            </div>
+
             <div class="return-btn">
-                <a th:href="@{|javascript:history.go(-1)|}">
+                <a th:href="@{/books/catalog}">
                     Retour
                 </a>
             </div>

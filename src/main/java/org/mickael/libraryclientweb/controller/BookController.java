@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -54,38 +57,49 @@ public class BookController {
         }
     }
 
-    @GetMapping("/catalog/book/{id}")
-    public String showBook(@PathVariable Integer id, Model model, @CookieValue(value = CookieUtils.HEADER, required = false)String accessToken){
+    @GetMapping("/catalog/book/{bookId}")
+    public String showBook(@PathVariable Integer bookId, Model model, @CookieValue(value = CookieUtils.HEADER, required = false)String accessToken){
         accessToken = "Bearer " + accessToken;
-        BookBean book = feignProxy.retrieveBook(id, accessToken);
+        BookBean book = feignProxy.retrieveBook(bookId, accessToken);
         List<CopyBean> copies;
         try{
-            copies = feignProxy.getCopiesAvailableForOneBook(id, accessToken);
+            copies = feignProxy.getCopiesAvailableForOneBook(bookId, accessToken);
         } catch (Exception e){
             copies = new ArrayList<>();
         }
         book.setCopies(copies);
         model.addAttribute("book", book);
-        List<ReservationBean> reservationBeans = feignProxy.getAllReservationsByBookId(id, accessToken);
+
+        List<ReservationBean> reservationBeans = feignProxy.getAllReservationsByBookId(bookId, accessToken);
+        reservationBeans.sort(Comparator.comparing(ReservationBean::getPosition));
         model.addAttribute("reservations", reservationBeans);
+        if(!reservationBeans.isEmpty()){
+            LocalDate soonDisp = reservationBeans.get(reservationBeans.size()-1).getSoonDisponibilityDate();
+            model.addAttribute("soonDisponibilityDate", soonDisp);
+        }
         return BOOK;
     }
 
-    @PostMapping("/catalog/book/{id}/reserve")
-    public String reserveBook(@PathVariable Integer id,@ModelAttribute BookBean book, Model model, @CookieValue(value = CookieUtils.HEADER, required = false)String accessToken){
-        accessToken = "Bearer " + accessToken;
+    @PostMapping("/catalog/book/{bookId}/reserve")
+    public String reserveBook(@PathVariable Integer bookId, @ModelAttribute BookBean book, Model model, @CookieValue(value = CookieUtils.HEADER, required = false)String accessToken, RedirectAttributes redirect){
         Integer customerId = CookieUtils.getUserIdFromJWT(accessToken);
+        accessToken = "Bearer " + accessToken;
         CustomerBean customerBean = feignProxy.retrieveCustomer(customerId, accessToken);
         ReservationBean reservationBean = new ReservationBean();
-        reservationBean.setBookId(id);
+        reservationBean.setBookId(bookId);
         reservationBean.setBookTitle(book.getTitle());
         reservationBean.setCustomerId(customerId);
         reservationBean.setCustomerEmail(customerBean.getEmail());
         reservationBean.setCustomerLastname(customerBean.getLastName());
         reservationBean.setCustomerFirstname(customerBean.getFirstName());
-        feignProxy.createReservation(reservationBean, accessToken);
-        model.addAttribute("msg", "Réservation validée");
-        return BOOK;
+        try {
+            feignProxy.createReservation(reservationBean, accessToken);
+            model.addAttribute("msg", "Réservation validée");
+            return "redirect:/books/catalog/book/{bookId}";
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Réservation impossible. Vous avez déjà une réservation pour ce livre.");
+            return "redirect:/books/catalog/book/{bookId}";
+        }
     }
 
 

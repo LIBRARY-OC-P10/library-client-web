@@ -2,6 +2,7 @@ package org.mickael.libraryclientweb.controller;
 
 import org.mickael.libraryclientweb.bean.customer.CustomerBean;
 import org.mickael.libraryclientweb.bean.loan.LoanBean;
+import org.mickael.libraryclientweb.bean.reservation.ReservationBean;
 import org.mickael.libraryclientweb.proxy.FeignProxy;
 import org.mickael.libraryclientweb.security.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,15 +43,16 @@ public class CustomerController {
     public String accounts(@CookieValue(value = CookieUtils.HEADER, required = false)String accessToken, Model model){
         if (accessToken == null) return REDIRECT_LOGIN_VIEW;
         Integer customerId = CookieUtils.getUserIdFromJWT(accessToken);
-        System.out.println("access token front : " + accessToken);
         CustomerBean customerBean = feignProxy.retrieveCustomer(customerId, "Bearer " + accessToken);
         List<LoanBean> loanBeans = feignProxy.findAllByCustomerId(customerId, "Bearer " + accessToken);
         for (LoanBean loanBean : loanBeans){
             loanBean.setCustomer(customerBean);
             loanBean.setCopy(feignProxy.retrieveCopy(loanBean.getCopyId(), "Bearer " + accessToken));
         }
+        List<ReservationBean> reservationBeans = feignProxy.getCustomerReservations(customerId, "Bearer " + accessToken);
         model.addAttribute("customer", customerBean);
         model.addAttribute("loans", loanBeans);
+        model.addAttribute("reservations", reservationBeans);
         return DASHBOARD_VIEW;
     }
 
