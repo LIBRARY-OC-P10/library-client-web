@@ -94,7 +94,7 @@ public class BookController {
         reservationBean.setCustomerFirstname(customerBean.getFirstName());
         try {
             feignProxy.createReservation(reservationBean, accessToken);
-            model.addAttribute("msg", "Réservation validée");
+            redirect.addFlashAttribute("success", "Réservation validée");
             return "redirect:/books/catalog/book/{bookId}";
         } catch (Exception e) {
             redirect.addFlashAttribute("error", "Réservation impossible. Vous avez déjà une réservation pour ce livre.");

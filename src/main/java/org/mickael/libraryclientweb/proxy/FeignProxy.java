@@ -91,7 +91,7 @@ public interface FeignProxy {
     @DeleteMapping("/library-ms-reservation/api/reservations/customer/{customerId}/book/{bookId}/")
     void deleteReservationAfterLoan(@PathVariable("customerId") Integer customerId, @PathVariable("bookId") Integer bookId, @RequestHeader("Authorization") String accessToken);
 
-    @DeleteMapping("/library-ms-reservation/api/reservations/{id}/")
-    void deleteReservationAfterTwoDays(@PathVariable("id") Integer id, @RequestHeader("Authorization") String accessToken);
+    @DeleteMapping("/library-ms-reservation/api/reservations/{reservationId}/")
+    void deleteReservationAfterTwoDays(@PathVariable("reservationId") Integer reservationId, @RequestHeader("Authorization") String accessToken);
 
 }

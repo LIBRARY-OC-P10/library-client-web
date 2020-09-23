@@ -43,6 +43,7 @@
                     Réservations : &nbsp; <span th:text="${reservations.size()}"></span>
                 </li>
             </ul>
+            <!-- display reservation button until reservation limit equals 2 x number of book copies-->
             <div class="reserv-btn" th:with="variable = ${book.stock * 2}" th:if="${!(reservations.size() == variable)}">
                 <form method="post" th:action="@{|/books/catalog/book/${book.id}/reserve|}" th:object="${book}" class="reserv-btn">
                     <input type="hidden" th:field="*{title}" th:value="${book.title}">
@@ -53,7 +54,9 @@
                     </button>
                 </form>
                 <p th:if="${error}" class="error" th:text="${error}"></p>
+                <p th:if="${success}" class="success" th:text="${success}"></p>
             </div>
+            <!-- display reservation button until reservation limit equals 2 x number of book copies-->
             <div class="reserv-btn" th:with="variable = ${book.stock * 2}" th:unless="${!(reservations.size() == variable)}">
                 <h3>Prochaine disponibilité : &nbsp; <span th:text="${#temporals.format(soonDisponibilityDate,'dd MMM YYYY')}"></span></h3>
             </div>
