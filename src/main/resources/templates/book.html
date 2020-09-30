@@ -45,10 +45,6 @@
             </ul>
             <!-- display reservation button until reservation limit equals 2 x number of book copies-->
             <div class="reserv-btn" th:if="!(${reservations.size()} == ${book.stock * 2})">
-                <p th:text="${book.stock * 2}"></p>
-                <p th:text="${reservations.size()}"></p>
-                <p th:text="!(${reservations.size()} == ${book.stock * 2})"></p>
-
                 <form method="post" th:action="@{|/books/catalog/book/${book.id}/reserve|}" th:object="${book}" class="reserv-btn">
                     <input type="hidden" th:field="*{title}" th:value="${book.title}">
                     <input type="hidden" th:field="*{id}" th:value="${book.id}">
