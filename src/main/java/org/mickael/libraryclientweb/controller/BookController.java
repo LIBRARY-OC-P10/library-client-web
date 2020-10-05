@@ -28,7 +28,7 @@ public class BookController {
     private static final String LIST_BOOK = "books";
     private static final String BOOK = "book";
     private static final String CATALOG = "catalog";
-
+    private static final String PREFIX = "Bearer ";
 
     @Autowired
     public BookController(FeignProxy feignProxy) {
@@ -37,7 +37,7 @@ public class BookController {
 
     @GetMapping("/catalog")
     public String showCatalog(Model model, @CookieValue(value = CookieUtils.HEADER, required = false)String accessToken){
-        model.addAttribute(LIST_BOOK, feignProxy.getBooks("Bearer " + accessToken));
+        model.addAttribute(LIST_BOOK, feignProxy.getBooks(PREFIX + accessToken));
         model.addAttribute("searchAttribut", new SearchBean());
         return CATALOG;
     }
@@ -46,7 +46,7 @@ public class BookController {
     public String displaySearchResult(@ModelAttribute("searchAttribut") SearchBean searchBean, Model model,
                                       @CookieValue(value = CookieUtils.HEADER, required = false)String accessToken){
         try{
-            List<BookBean> books = feignProxy.getBooksBySearchValue(searchBean,"Bearer " + accessToken);
+            List<BookBean> books = feignProxy.getBooksBySearchValue(searchBean,PREFIX + accessToken);
             model.addAttribute(LIST_BOOK, books);
             return CATALOG;
         } catch (Exception e){
@@ -59,7 +59,7 @@ public class BookController {
 
     @GetMapping("/catalog/book/{bookId}")
     public String showBook(@PathVariable Integer bookId, Model model, @CookieValue(value = CookieUtils.HEADER, required = false)String accessToken){
-        accessToken = "Bearer " + accessToken;
+        accessToken = PREFIX + accessToken;
         BookBean book = feignProxy.retrieveBook(bookId, accessToken);
         List<CopyBean> copies;
         try{
@@ -83,7 +83,11 @@ public class BookController {
     @PostMapping("/catalog/book/{bookId}/reserve")
     public String reserveBook(@PathVariable Integer bookId, @ModelAttribute BookBean book, Model model, @CookieValue(value = CookieUtils.HEADER, required = false)String accessToken, RedirectAttributes redirect){
         Integer customerId = CookieUtils.getUserIdFromJWT(accessToken);
-        accessToken = "Bearer " + accessToken;
+        accessToken = PREFIX + accessToken;
+        if (feignProxy.checkIfLoanExistForCustomerIdAndBookId(customerId,bookId,accessToken)){
+            redirect.addFlashAttribute("error", "Réservation impossible. Vous avez déjà un emprunt en cours pour ce livre.");
+            return "redirect:/books/catalog/book/{bookId}";
+        }
         CustomerBean customerBean = feignProxy.retrieveCustomer(customerId, accessToken);
         ReservationBean reservationBean = new ReservationBean();
         reservationBean.setBookId(bookId);

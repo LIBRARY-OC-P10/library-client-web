@@ -74,6 +74,9 @@ public interface FeignProxy {
     @GetMapping("/library-ms-loan/api/loans/extend/{id}")
     LoanBean extendLoan(@PathVariable("id") Integer id, @RequestHeader("Authorization") String accessToken);
 
+    @GetMapping("/library-ms-loan/api/loans/customer/{customerId}/book/{bookId}")
+    boolean checkIfLoanExistForCustomerIdAndBookId(@PathVariable("customerId") Integer customerId, @PathVariable("bookId") Integer bookId, @RequestHeader("Authorization") String accessToken);
+
 
     /* ==== RESERVATIONS ==== */
     @PostMapping("/library-ms-reservation/api/reservations")
