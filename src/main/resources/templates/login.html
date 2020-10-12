@@ -1,33 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head th:insert="fragments/fragments.html :: headerfiles">
-    <title>library</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css}" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet"  href="../static/css/styles.css" th:href="@{/css/styles.css}">
+    <title>Login</title>
 </head>
 <body>
 
-<div th:insert="fragments/fragments.html :: nav"></div>
-
-<div class="login-clean">
-    <form method="post" th:action="@{/login}" th:object="${user}">
-        <h2 class="sr-only">Login Form</h2>
-        <div class="illustration"><i class="icon ion-ios-navigate"></i></div>
-        <div class="form-group">
-            <input class="form-control" th:field="*{username}" type="text" name="email" placeholder="Email" required="true">
-            <span class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
-        </div>
-        <div class="form-group">
-            <input class="form-control" th:field="*{password}" type="password" name="password" placeholder="Mot de passe" required="true">
-            <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary btn-block" type="submit">Connexion</button>
-        </div>
-        <a class="forgot" href="#">J'ai oublié mon identifiant/mot de passe</a></form>
+<div class="form-grid">
+    <div class="form-container">
+        <form class="login-form" method="post" th:action="@{/login}" th:object="${user}">
+            <img src="../static/image/logo-library.png" th:src="@{${'/image/logo-library.png'}}" alt="Logo" class="login-form__logo">
+            <a th:href="@{/home}">
+                <h2>
+                    <i class="fa fa-home" aria-hidden="true"></i> &nbsp; Bibliothèque d'ocland
+                </h2>
+            </a>
+            <input type="text" name="email" id="email" placeholder="Email" th:field="*{username}" required="true">
+            <input type="password" name="password" id="password" placeholder="Mot de passe" th:field="*{password}" required="true">
+            <input type="submit" value="Connexion" class="login-form__btn">
+        </form>
+    </div>
 </div>
-
-<div th:insert="fragments/fragments.html :: footer" class="footer"></div>
-
-<div th:insert="fragments/fragments.html :: script"></div>
 
 </body>
 

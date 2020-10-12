@@ -60,11 +60,7 @@ public class AuthenticationController {
             model.addAttribute("user", accountLoginDto);
             return LOGIN_VIEW;
         }
-/*        ResponseEntity responseEntity = feignAuthProxy.login(accountLoginDto);
-        if (responseEntity.getStatusCode().is4xxClientError()){
-            model.addAttribute("user", accountLoginDto);
-            return LOGIN_VIEW;
-        }*/
+
         String token = responseEntity.getHeaders().getFirst("Authorization").replace("Bearer ", "");
         Cookie cookie = CookieUtils.generateCookie(token);
         response.addCookie(cookie);

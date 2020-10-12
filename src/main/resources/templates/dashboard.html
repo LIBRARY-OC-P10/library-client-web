@@ -1,9 +1,139 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head th:insert="fragments/fragments.html :: headerfiles">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css}" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../static/css/styles.css" th:href="@{/css/styles.css}">
     <title>Dashboard</title>
 </head>
 <body>
+<div class="main-grid">
+    <!-- Navigation bar-->
+    <nav class="nav" th:if="${session.logged}">
+        <ul>
+            <li><a th:href="@{/home}">Accueil</a></li>
+            <li><a th:href="@{/books/catalog}">Catalogue</a></li>
+            <li><a th:href="@{/customers/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/logout}">Déconnexion</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- Profile Section -->
+    <section class="profile-container">
+        <img th:src="@{${'/image/profil.jpg'}}" src="../static/image/profil.jpg" alt="profile-picture">
+        <div class="user-info">
+            <h1><span th:text="${customer.firstName}"></span> &nbsp; <span th:text="${customer.lastName}"></span></h1>
+            <p>
+                Inscrit depuis le :
+                <span th:text="${#temporals.format(customer.registrationDate,'dd MMM YYYY')}"></span>
+            </p>
+            <ul>
+                <li>
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    &nbsp;
+                    Email : <span th:text="${customer.email}"></span>
+                </li>
+                <li>
+                    <i class="fa fa-phone" aria-hidden="true"></i>
+                    &nbsp; Téléphone : <span th:text="${customer.phoneNumber}"></span>
+                </li>
+                <li>
+                    <i class="fa fa-address-card" aria-hidden="true"></i>
+                    &nbsp; Adresse : <span th:text="${customer.address}"></span>
+                </li>
+            </ul>
+        </div>
+    </section>
+    <!-- Reservation section -->
+    <section class="reservation-container">
+
+        <div class="reservation-box" th:each="reservation : ${reservations}">
+            <i class="fa fa-book fa-4x" aria-hidden="true"></i>
+            <h3>Reservation</h3>
+            <p><span th:text="${reservation.bookTitle}"></span></p>
+            <p>
+                <i class="fa fa-calendar-alt fa-1x" aria-hidden="true"></i> &nbsp;
+                Disponibilité : <span th:text="${#temporals.format(reservation.soonDisponibilityDate,'dd MMM YYYY')}"></span>
+            </p>
+            <p>
+                <i class="fa fa-map-marker-alt" aria-hidden="true"></i> &nbsp;
+                Position : <span th:text="${reservation.position}"></span>
+            </p>
+            <div class="cancel-btn">
+                <a th:href="@{|/reservations/cancel/${reservation.id}|}" >Annuler</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Loan section -->
+    <section class="loan-container" >
+        <div class="card" th:each="loan : ${loans}">
+            <div class="card__img">
+                <a th:href="@{'/books/catalog/book/' + ${loan.copy.book.id}}">
+                    <img th:width="100" th:src="${loan.copy.book.cover.getUrl()}" alt="book-cover" src="">
+                </a>
+            </div>
+            <div class="top-card">
+                <div class="top-card__title">
+                    Status
+                </div>
+                <p class="top-card__status">
+                    <span th:text="${loan.loanStatus}"></span>
+                </p>
+            </div>
+            <div class="bottom-card" th:if="${!loan.loanStatus.equalsIgnoreCase('Rendu')}">
+                <p class="bottom-card__status">
+                    Emprunt : <span th:text="${#temporals.format(loan.beginLoanDate,'dd MMM YYYY')}"></span>
+                </p>
+                <p class="bottom-card__status" th:if="${!loan.loanStatus.equalsIgnoreCase('Prolongé')}">
+                    Retour : <span th:text="${#temporals.format(loan.endingLoanDate,'dd MMM YYYY')}"></span>
+                </p>
+                <p class="bottom-card__status" th:unless="${!loan.loanStatus.equalsIgnoreCase('Prolongé')}">
+                    Retour : <span th:text="${#temporals.format(loan.extendLoanDate,'dd MMM YYYY')}"></span>
+                </p>
+                <div class="extend-btn" th:if="${!(loan.loanStatus.equalsIgnoreCase('Rendu') || loan.loanStatus.equalsIgnoreCase('En retard') || loan.extend==true)}">
+                    <a th:href="@{|/loans/extend/${loan.id}|}">
+                        <i class="fas fa-redo"  aria-hidden="true"></i> &nbsp;
+                        Prolonger
+                    </a>
+                </div>
+                <div class="extend-btn" th:unless="${!(loan.loanStatus.equalsIgnoreCase('Rendu') || loan.loanStatus.equalsIgnoreCase('En retard') || loan.extend==true)}">
+                </div>
+            </div>
+            <div class="bottom-card" th:unless="${!loan.loanStatus.equalsIgnoreCase('Rendu')}">
+                <p class="bottom-card__status">
+                    Emprunt : <span th:text="${#temporals.format(loan.beginLoanDate,'dd MMM YYYY')}"></span>
+                </p>
+                <p class="bottom-card__status" th:if="${!loan.loanStatus.equalsIgnoreCase('Prolongé')}">
+                    Retour : <span th:text="${#temporals.format(loan.returnLoanDate,'dd MMM YYYY')}"></span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <!-- Start: Links -->
+        <ul>
+            <li><a href="#">Accessibilité</a></li>
+            <li><a href="#">Mentions légales</a></li>
+            <li><a href="#">A propos</a></li>
+            <li><a href="#">Nous contacter</a></li>
+        </ul>
+        <!-- End: Links -->
+        <!-- Start: Copyright -->
+        <p class="copyright">Bibliothèque d'OCland © 2020</p>
+        <!-- End: Copyright -->
+    </footer>
+</div>
+
+
+
+<!--
 
 <div th:insert="fragments/fragments.html :: nav"></div>
 
@@ -32,9 +162,9 @@
                 <div class="loan-title text-center">
                     <h2>Mes livres empruntés</h2>
                 </div>
-                <!-- List of book borrow by user -->
+                &lt;!&ndash; List of book borrow by user &ndash;&gt;
                 <div class="loan-list">
-                    <!-- Loan list -->
+                    &lt;!&ndash; Loan list &ndash;&gt;
                     <div th:each="loan : ${loans}" class="catalog-item">
                         <div th:classappend="${(loan.loanStatus.equalsIgnoreCase('Rendu') ? 'inside-item finish-item' : 'inside-item' )}">
                             <a th:href="@{|/books/catalog/book/${loan.copy.book.id}|}">
@@ -106,6 +236,7 @@
 <div th:insert="fragments/fragments.html :: footer" class="footer"></div>
 
 <div th:insert="fragments/fragments.html :: script"></div>
+-->
 
 </body>
 </html>

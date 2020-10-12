@@ -2,6 +2,7 @@ package org.mickael.libraryclientweb.controller;
 
 import org.mickael.libraryclientweb.bean.customer.CustomerBean;
 import org.mickael.libraryclientweb.bean.loan.LoanBean;
+import org.mickael.libraryclientweb.bean.reservation.ReservationBean;
 import org.mickael.libraryclientweb.proxy.FeignProxy;
 import org.mickael.libraryclientweb.security.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -42,23 +44,31 @@ public class CustomerController {
     public String accounts(@CookieValue(value = CookieUtils.HEADER, required = false)String accessToken, Model model){
         if (accessToken == null) return REDIRECT_LOGIN_VIEW;
         Integer customerId = CookieUtils.getUserIdFromJWT(accessToken);
-        CustomerBean customerBean = feignProxy.retrieveAccount(customerId, "Bearer " + accessToken);
-        List<LoanBean> loanBeans = feignProxy.findAllByCustomerId(customerId, "Bearer " + accessToken);
-        for (LoanBean loanBean : loanBeans){
-            loanBean.setCustomer(customerBean);
-            loanBean.setCopy(feignProxy.retrieveCopy(loanBean.getCopyId(), "Bearer " + accessToken));
+        CustomerBean customerBean = feignProxy.retrieveCustomer(customerId, "Bearer " + accessToken);
+        try {
+            List<LoanBean> loanBeans = feignProxy.findAllByCustomerId(customerId, "Bearer " + accessToken);
+            for (LoanBean loanBean : loanBeans){
+                loanBean.setCustomer(customerBean);
+                loanBean.setCopy(feignProxy.retrieveCopy(loanBean.getCopyId(), "Bearer " + accessToken));
+            }
+            model.addAttribute("loans", loanBeans);
+        } catch (Exception e) {
+            List<LoanBean> loanBeans = new ArrayList<>();
+            model.addAttribute("loans", loanBeans);
         }
+
+        List<ReservationBean> reservationBeans = feignProxy.getCustomerReservations(customerId, "Bearer " + accessToken);
         model.addAttribute("customer", customerBean);
-        model.addAttribute("loans", loanBeans);
+
+        model.addAttribute("reservations", reservationBeans);
         return DASHBOARD_VIEW;
     }
 
     @GetMapping("/edit/account")
     public String displayAccountForm(Model model, @CookieValue(value = CookieUtils.HEADER, required = false) String accessToken){
         if (accessToken == null) return REDIRECT_LOGIN_VIEW;
-        Integer userId = CookieUtils.getUserIdFromJWT(accessToken);
-        Integer customerId = 2;
-        CustomerBean customerBean = feignProxy.retrieveAccount(customerId, "Bearer " + accessToken);
+        Integer customerId = CookieUtils.getUserIdFromJWT(accessToken);
+        CustomerBean customerBean = feignProxy.retrieveCustomer(customerId, "Bearer " + accessToken);
         model.addAttribute(ACCOUNT_ATT, customerBean);
         return ACCOUNT_FORM_VIEW;
     }
